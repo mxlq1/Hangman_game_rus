@@ -26,6 +26,17 @@ def start(message):
     print(word)
 
 
+@bot.message_handler(commands=['help'])
+def bot_help(message):
+    bot.send_message(message.chat.id, "Виселица - игра, где я загадываю слово, а Вы пытаетесь его отгадать.")
+    bot.send_message(message.chat.id, "Если названной буквы в слове нет, то человечек на виселице постепенно"
+                                      " дорисовывается, иначе - открывается угаданная буква."
+                                      " Если отгаданная буква в слове не одна, то открываются сразу все эти буквы")
+    bot.send_message(message.chat.id, "Для начала игры напишите /start . Буквы можно угадывать только по одной."
+                                      " Регистр не важен.")
+
+
+
 @bot.message_handler()
 def game(letter):
     global mistake_counter
