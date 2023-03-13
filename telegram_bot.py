@@ -21,14 +21,19 @@ def start(message):
     print(person.word)
 
 
-#@bot.message_handler(commands=['help'])
-#def bot_help(message):
-#    bot.send_message(message.chat.id, "Виселица - игра, где я загадываю слово, а Вы пытаетесь его отгадать.")
-#    bot.send_message(message.chat.id, "Если названной буквы в слове нет, то человечек на виселице постепенно"
-#                                      " дорисовывается, иначе - открывается угаданная буква."
-#                                      " Если отгаданная буква в слове не одна, то открываются сразу все эти буквы")
-#    bot.send_message(message.chat.id, "Для начала игры напишите /start . Буквы можно угадывать только по одной."
-#                                      " Регистр не важен.")
+@bot.message_handler(commands=['help'])
+def bot_help(message):
+
+    person = User(message.chat.id)
+    user_dictionary[message.chat.id] = person
+    person.flag = False
+
+    bot.send_message(person.user_id, "Виселица - игра, где я загадываю слово, а Вы пытаетесь его отгадать.")
+    bot.send_message(person.user_id, "Если названной буквы в слове нет, то человечек на виселице постепенно"
+                                      " дорисовывается, иначе - открывается угаданная буква."
+                                      " Если отгаданная буква в слове не одна, то открываются сразу все эти буквы")
+    bot.send_message(person.user_id, "Для начала игры напишите /start . Буквы можно угадывать только по одной."
+                                      " Регистр не важен.")
 
 
 
@@ -55,6 +60,7 @@ def game(letter):
                 if current_player.mistake_counter >= 6:
                     bot.send_message(current_player.user_id, "Вы проиграли")
                     bot.send_message(current_player.user_id, f'Я загадал слово: {current_player.word}')
+                    bot.send_message(current_player.user_id, "Чтобы начать игру заново, напишите: /start")
                     current_player.flag = False
                 else:
                     bot.send_message(current_player.user_id, panel_to_string(current_player.guess_panel))
@@ -67,6 +73,7 @@ def game(letter):
 
             if "_ " not in current_player.guess_panel:
                 bot.send_message(current_player.user_id, "Поздравляю, Вы победили!")
+                bot.send_message(current_player.user_id, "Чтобы начать игру заново, напишите: /start")
                 current_player.flag = False
 
 
