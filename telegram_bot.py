@@ -62,7 +62,6 @@ def game(letter):
                     bot.send_message(chat_id, "Вы проиграли")
                     bot.send_message(chat_id, f'Я загадал слово: {word}')
                     flag = False
-                    bot.send_message(chat_id, "Чтобы продолжить, нажмите: /start")
                 else:
                     bot.send_message(chat_id, panel_to_string(guess_panel))
 
@@ -74,8 +73,6 @@ def game(letter):
 
             if "_ " not in guess_panel:
                 bot.send_message(chat_id, "Поздравляю, Вы победили!")
-                bot.send_message(chat_id, "Чтобы продолжить, нажмите: /start")
-
                 flag = False
 
 
@@ -84,6 +81,6 @@ bot.polling(none_stop=True)
 
 # надо сделать:
 
-# 1. список использанных букв
-# 2. сделать класс user
+# 3. список использанных букв
+# 5. добавить в хендлер /help
 
