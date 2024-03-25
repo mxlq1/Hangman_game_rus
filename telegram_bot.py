@@ -1,4 +1,5 @@
 import telebot
+from telebot import types
 from User import User
 from bot_functions import guess_word, panel_to_string
 
@@ -10,19 +11,16 @@ user_dictionary = dict()
 @bot.message_handler(commands=['start'])
 def start(message):
 
-    person = User(message.chat.id)
-    user_dictionary[message.chat.id] = person
-    bot.send_message(person.user_id, "Сейчас я загадаю слово.")
-    bot.send_message(person.user_id, panel_to_string(person.guess_panel))
-
-    with open("hangman_images/hangman_0.png", "rb") as photo:
-        bot.send_photo(person.user_id, photo)
-
-    print(person.word)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btn1 = types.KeyboardButton("/help")
+    btn2 = types.KeyboardButton("/play")
+    btn3 = types.KeyboardButton("/register")
+    markup.add(btn1, btn2, btn3)
+    bot.send_message(message.from_user.id, "Добро пожаловать в игру виселица", reply_markup=markup)
 
 
 @bot.message_handler(commands=['help'])
-def bot_help(message):
+def help(message):
 
     person = User(message.chat.id)
     user_dictionary[message.chat.id] = person
@@ -36,6 +34,26 @@ def bot_help(message):
                                       " Регистр не важен.")
 
 
+@bot.message_handler(commands=['register'])
+def register(message):
+    person = User(message.chat.id)
+    user_dictionary[message.chat.id] = person
+    bot.send_message(person.user_id, "Вы успешно зарегестрированы. Начать игру: /play")
+
+
+
+@bot.message_handler(commands=['play'])
+def play(message):
+    person = User(message.chat.id)
+    user_dictionary[message.chat.id] = person
+    bot.send_message(person.user_id, "Сейчас я загадаю слово.")
+    bot.send_message(person.user_id, panel_to_string(person.guess_panel))
+
+    with open("hangman_images/hangman_0.png", "rb") as photo:
+        bot.send_photo(person.user_id, photo)
+
+    print(person.word)
+
 
 @bot.message_handler()
 def game(letter):
@@ -44,7 +62,7 @@ def game(letter):
     letter = letter.text.lower()
 
     if not current_player.flag:
-        bot.send_message(current_player.user_id, "Чтобы начать игру заново, напишите: /start")
+        bot.send_message(current_player.user_id, "Чтобы начать игру заново, напишите: /play")
     else:
         if len(letter) > 1:
             bot.send_message(current_player.user_id, "Можно угадать только одну букву")
@@ -60,7 +78,7 @@ def game(letter):
                 if current_player.mistake_counter >= 6:
                     bot.send_message(current_player.user_id, "Вы проиграли")
                     bot.send_message(current_player.user_id, f'Я загадал слово: {current_player.word}')
-                    bot.send_message(current_player.user_id, "Чтобы начать игру заново, напишите: /start")
+                    bot.send_message(current_player.user_id, "Чтобы начать игру заново, напишите: /play")
                     current_player.flag = False
                 else:
                     bot.send_message(current_player.user_id, panel_to_string(current_player.guess_panel))
@@ -73,7 +91,7 @@ def game(letter):
 
             if "_ " not in current_player.guess_panel:
                 bot.send_message(current_player.user_id, "Поздравляю, Вы победили!")
-                bot.send_message(current_player.user_id, "Чтобы начать игру заново, напишите: /start")
+                bot.send_message(current_player.user_id, "Чтобы начать игру заново, напишите: /play")
                 current_player.flag = False
 
 
