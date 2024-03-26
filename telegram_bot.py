@@ -1,8 +1,8 @@
 import telebot
 import threading
 from telebot import types
-from User import User, user_identification
-from bot_functions import guess_word, panel_to_string, make_panel, get_random_gif, get_hamster_gif
+from User import user_identification
+from bot_functions import guess_word, panel_to_string, make_panel, get_random_gif
 from random import choice
 from Scheduler import send_reminder_to_play
 
@@ -19,6 +19,7 @@ user_dictionary = dict()
 """Здесь реализована рассылка в отдельном потоке как на лекции. Функция реализовна в файле Scheduler.py"""
 thread_scheduler = threading.Thread(target=send_reminder_to_play, args=(bot, user_dictionary))
 thread_scheduler.start()
+
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -83,13 +84,13 @@ def rules(message):
 
     bot.send_message(player.user_id, "Виселица - игра, где я загадываю слово, а Вы пытаетесь его отгадать.")
     bot.send_message(player.user_id, "Если названной буквы в слове нет, то человечек на виселице постепенно"
-                                      " дорисовывается, иначе - открывается угаданная буква."
-                                      " Если отгаданная буква в слове не одна, то открываются сразу все эти буквы"
+                                     " дорисовывается, иначе - открывается угаданная буква."
+                                     " Если отгаданная буква в слове не одна, то открываются сразу все эти буквы"
                      )
     bot.send_message(player.user_id, "Для начала игры напишите /play . Буквы можно угадывать по одной, а можно "
                                      "написать все слово целиком. За непраивльно угаданное слово или букву в обоих"
                                      "случаях рисуется одна конечность. Регистр не важен."
-                    )
+                     )
 
 
 @bot.message_handler(commands=['examples'])
@@ -126,7 +127,6 @@ def setname(message):
     player.username = name
     bot.send_message(player.user_id, f"Вам присвоено кодовое имя: {name}")
     user_dictionary[message.chat.id] = player
-
 
 
 @bot.message_handler(commands=['play'])
